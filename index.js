@@ -29,14 +29,29 @@ const render = (node) => {
   return parseNode(node);
 };
 
-const parseNode = (node) => {
+const parseNode = (node, isTextNode = false) => {
+  const elType = node[0];
   return node.reduce((acc, el, index) => {
-    if (typeof el === 'string') {
-      let styles = parseStyles(node[index + 1]);
-      return `${acc}<${el} ${styles}>`;
+    if (isTextNode) {
+      return `${acc}${el}</${elType}>`;
+    } else if (index === 0) {
+      return `${acc}<${el}`;
+    } else if (typeof el === 'string') {
+      // ??
+      return `${acc}${el}</${elType}>`;
     } else if (Array.isArray(el)) {
-      return acc;
+      // handle children
+      if (Array.isArray(el[0])) {
+        return `${acc}${parseNode(el)}`;
+      } else {
+        return `${acc}${parseNode(el, true)}`;
+      }
+    } else if (!Array.isArray(el) && typeof el === 'object') {
+      // handle styles
+      let styles = parseStyles(el);
+      return `${acc} ${styles}>`;
     } else {
+      // handle ???
       return acc;
     }
   }, '');
@@ -54,4 +69,5 @@ const parseStyles = (stylesNode) => {
 };
 
 const app = document.getElementById('app');
+console.log(render(rootNode));
 app.innerHTML = render(rootNode);
