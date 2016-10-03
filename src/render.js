@@ -1,39 +1,4 @@
 /*
- * describe virtual dom
- * node = [ string eltype : obj attributes : list children ]
- */
-const rootNode = [
-  'div', {
-    'style': {
-      'text-align': 'center',
-      'color': 'blue',
-      'margin': '20px'
-    }
-  },
-  ['hello world']
-];
-
-const nestedNode = [
-  'div', {
-    'style': {
-      'text-align': 'center',
-      'color': 'blue',
-      'margin': '20px'
-    }
-  },
-  [
-    [
-      'p', {
-        'style': {
-          'font-size': '20px;'
-        }
-      },
-      ['hello world']
-    ]
-  ]
-];
-
-/*
  * render a node or simple textNode as html string
  * node -> HTML string
  */
@@ -66,7 +31,4 @@ const renderStyles = (stylesMap) => {
   return `style="${stylesString}"`;
 };
 
-const app = document.getElementById('app');
-console.log(render(nestedNode));
-console.log(render(rootNode));
-app.innerHTML = render(nestedNode);
+export default render;
