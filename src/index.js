@@ -1,40 +1,32 @@
-import render from './render';
+import createElement from './createElement';
+import createNode from './createNode';
 
 /*
- * describe virtual dom
- * node = [ string eltype : obj attributes : list children ]
+ * describe original dom
  */
-const rootNode = [
-  'div', {
-    'style': {
-      'text-align': 'center',
-      'color': 'blue',
-      'margin': '20px'
-    }
+const atts = {
+  'style': {
+    'text-align': 'center',
+    'color': 'blue',
+    'margin': '20px'
   },
-  ['hello world']
-];
-
-const nestedNode = [
-  'div', {
-    'style': {
-      'text-align': 'center',
-      'color': 'blue',
-      'margin': '20px'
-    }
-  },
+  'id': 'vdom'
+};
+const children = [
   [
-    [
-      'p', {
-        'style': {
-          'font-size': '20px;'
-        }
-      },
-      ['hello world']
-    ]
+    'p', {
+      'style': {
+        'font-size': '20px;'
+      }
+    },
+    [12345]
   ]
 ];
+const node = createNode('div', atts, children);
 
 
+/*
+ * set original dom
+ */
 const app = document.getElementById('app');
-app.innerHTML = render(nestedNode);
+app.innerHTML = createElement(node);
