@@ -1,14 +1,17 @@
+import { isStringOrNum } from './helpers';
+
+
 /*
  * create an HTML node element or simple textNode as html string
  *
  * node tree -> HTML string
  */
 const createElement = (node) => {
-  if (typeof node === 'string' || typeof node === 'number') {
+  if (isStringOrNum(node)) {
     return node;
   }
   if (node.length !== 3) {
-    console.log(node);
+    console.error(node);
     throw new Error('Please pass a valid node.');
   }
 
