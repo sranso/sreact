@@ -24,7 +24,9 @@ describe('createNode module', () => {
         ]
       ];
       const node = createNode('div', atts, children);
+      const simpleNode = createNode('div');
       expect(node.length).to.equal(3);
+      expect(simpleNode.length).to.equal(3);
     });
   });
 });

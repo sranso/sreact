@@ -19,6 +19,7 @@ $ npm run test
 - interact with browser APIs
 - use ES6
 - set up a project
+- practice TDD
 
 
 ###Resources:
