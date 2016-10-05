@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/ --watch --color --require babel-register",
-    "start-dev": "webpack --watch --progress --color -d"
+    "start": "webpack --watch --progress --color -d"
   },
   "keywords": [
     "React",
