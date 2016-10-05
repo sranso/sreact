@@ -37,3 +37,8 @@ const createElementStyles = (stylesMap) => {
 
 
 export default createElement;
+export {
+  createElement,
+  createElementAtt,
+  createElementStyles
+};
