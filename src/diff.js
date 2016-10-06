@@ -36,14 +36,19 @@ const walk = (a, b, index) => {
   }
 
   /* check children */
-  const maxChildren = Math.max(aChildren.length, bChildren.length);
-  for (let i = 0; i < maxChildren; i++) {
+  const maxChildren = (aChildren.length > bChildren.length) ? aChildren : bChildren;
+  const childPatchesArray = maxChildren.map((val, i, arr) => {
     const aChild = aChildren[i];
     const bChild = bChildren[i];
-    if (aChild && bChild) {
-      return walk(aChild, bChild, index + 1);
+    return walk(aChild, bChild, index + 1);
+  });
+  return childPatchesArray.reduce((acc, patch, i) => {
+    if (patch) {
+      const patchI = index + 1 + i + 1;
+      acc[patchI] = patch;
     }
-  }
+    return acc;
+  }, {});
 };
 
 const attsAreSame = (a, b) => {

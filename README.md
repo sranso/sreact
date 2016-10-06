@@ -32,6 +32,8 @@ $ npm run test
 ###General Todos
 - add eslint
 - use https://github.com/paul-jean/dom-viz to see if correct divs are changing
+- handle img tags (no children will break!), p tags with a tags inside
+- add tests in browser (mocha)
 
 
 ###Virtual DOM Todos/Steps

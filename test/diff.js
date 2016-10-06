@@ -72,11 +72,7 @@ describe('diff module', () => {
       expect(patches[1][0]).to.equal('div');
     });
 
-    it('should return a new child patch when a child is different, ii', () => {
-      // TODO
-      // - how to index among multiple children
-      // - how to return multiple different children
-      // - how to delete children from a if they don't exist in b
+    it('should return an add child patch when a child is added', () => {
       const child = [
         [
           'div', {
@@ -84,7 +80,7 @@ describe('diff module', () => {
               'text': 'lots'
             }
           },
-          ['hi']
+          ['i\'m new here']
         ]
       ];
       const newChildren = children.slice();
