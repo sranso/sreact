@@ -1,8 +1,34 @@
-import createNode from '../src/createNode';
+import createNode, { VirtualText, VirtualNode } from '../src/createNode';
 
 import { expect } from 'chai';
 
 describe('createNode module', () => {
+  describe('VirtualText', () => {
+    it('should return a virtual text node with a text value', () => {
+      expect(new VirtualText('sup')).to.contain.keys(['text']);
+    });
+  });
+
+  describe('VirtualNode', () => {
+    let node;
+    beforeEach(() => {
+      node = new VirtualNode('div', {}, []);
+    });
+
+    it('should return a virtual node object', () => {
+      expect(node).to.be.instanceof(VirtualNode);
+    });
+
+    it('should return a virtual node with an id', () => {
+      expect(node).to.contain.all.keys(['id', 'elType', 'attributes', 'children']);
+    });
+
+    it('should increment id', () => {
+      const newNode = new VirtualNode('div', {}, []);
+      expect(node.id).to.not.equal(newNode.id);
+    });
+  });
+
   describe('createNode', () => {
     it('should return a node tree', () => {
       const atts = {
@@ -29,4 +55,5 @@ describe('createNode module', () => {
       expect(simpleNode.length).to.equal(3);
     });
   });
+
 });
