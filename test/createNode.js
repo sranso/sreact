@@ -12,8 +12,8 @@ describe('createNode module', () => {
 
   describe('VirtualNode', () => {
     let node;
-    beforeEach(() => {
-      node = new VirtualNode('div', {}, []);
+    before(() => {
+      node = new VirtualNode('div', { styles: { width: '1px' }, id: 'v' }, []);
     });
 
     it('should return a virtual node object', () => {
