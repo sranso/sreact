@@ -22,7 +22,8 @@ class VirtualNode {
     const c = children.map((child) => {
       if (child instanceof (VirtualNode || VirtualText)) {
         return child;
-      } else if (typeof child === 'string') {
+      } else if (typeof child === 'string' ||
+                 typeof child === 'number') {
         return new VirtualText(child);
       } else {
         return new VirtualNode(child);
@@ -34,22 +35,13 @@ class VirtualNode {
 
 VirtualNode.idCounter = 0;
 
-const createNodeNew = (elType, atts = {}, children = []) => {
+const createNode = (elType, atts = {}, children = []) => {
   return new VirtualNode(elType, atts, children);
 }
-
-const createNode = (elType, atts = {}, children = []) => {
-  return [
-    elType,
-    atts,
-    children
-  ];
-};
 
 
 export default createNode;
 export {
   VirtualText,
-  VirtualNode,
-  createNodeNew
+  VirtualNode
 };

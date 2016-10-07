@@ -1,62 +1,26 @@
-import { createElement,
-         createElementAtt,
-         createElementStyles,
-         createElementNew } from '../src/createElement';
-import createNode, { createNodeNew } from '../src/createNode';
+import createElement, {
+  createElementAtt,
+  createElementStyles
+} from '../src/createElement';
+
+import createNode from '../src/createNode';
 
 import { expect } from 'chai';
 
 describe('createElement module', () => {
 
-  describe('createElementNew', () => {
+  describe('createElement', () => {
     let node;
     before(() => {
-      node = createNodeNew('div', { style: { width: '100px' }, id: 'brb' }, [
-        createNodeNew('p', { class: 'para' }, [ 'sup world' ])
+      node = createNode('div', { style: { width: '100px' }, id: 'brb' }, [
+        createNode('p', { class: 'para' }, [ 'sup world' ])
       ]);
-    });
-
-    it('should return an error if node is invalid', () => {
-      expect(createElementNew).to.throw(Error);
-    });
-
-
-    it('should return an html string', () => {
-      expect(createElementNew(node)).to.be.have.string('<div');
-      expect(createElementNew(node)).to.be.have.string('</div>');
-      expect(createElementNew(node)).to.be.have.string('<p');
-      expect(createElementNew(node)).to.be.have.string('</p>');
-    });
-
-  });
-
-  describe('createElement', () => {
-    let atts, children, node;
-    beforeEach(() => {
-      atts = {
-        'style': {
-          'text-align': 'center',
-          'color': 'blue',
-          'margin': '20px'
-        },
-        'id': 'vdom'
-      };
-      children = [
-        [
-          'p', {
-            'style': {
-              'font-size': '20px;'
-            }
-          },
-          [12345]
-        ]
-      ];
-      node = createNode('div', atts, children);
     });
 
     it('should return an error if node is invalid', () => {
       expect(createElement).to.throw(Error);
     });
+
 
     it('should return an html string', () => {
       expect(createElement(node)).to.be.have.string('<div');
@@ -64,6 +28,7 @@ describe('createElement module', () => {
       expect(createElement(node)).to.be.have.string('<p');
       expect(createElement(node)).to.be.have.string('</p>');
     });
+
   });
 
   describe('createElementAtt', () => {

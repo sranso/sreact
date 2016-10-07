@@ -1,4 +1,4 @@
-import createNode, { VirtualText, VirtualNode, createNodeNew } from '../src/createNode';
+import createNode, { VirtualText, VirtualNode } from '../src/createNode';
 
 import { expect } from 'chai';
 
@@ -36,11 +36,11 @@ describe('createNode module', () => {
     });
   });
 
-  describe('createNodeNew', () => {
+  describe('createNode', () => {
     let node;
     before(() => {
-      node = createNodeNew('div', { style: { width: '100px' } }, [
-        createNodeNew('p', { class: 'para' }, [ 'sup world' ])
+      node = createNode('div', { style: { width: '100px' } }, [
+        createNode('p', { class: 'para' }, [ 'sup world' ])
       ]);
     });
 
@@ -55,33 +55,6 @@ describe('createNode module', () => {
     it('should create VirtualText nodes for text children', () => {
       const pNode = node.children[0];
       expect(pNode.children[0]).to.be.an.instanceof(VirtualText);
-    });
-  });
-
-  describe('createNode', () => {
-    it('should return a node tree', () => {
-      const atts = {
-        'style': {
-          'text-align': 'center',
-          'color': 'blue',
-          'margin': '20px'
-        },
-        'id': 'vdom'
-      };
-      const children = [
-        [
-          'p', {
-            'style': {
-              'font-size': '20px;'
-            }
-          },
-          [12345]
-        ]
-      ];
-      const node = createNode('div', atts, children);
-      const simpleNode = createNode('div');
-      expect(node.length).to.equal(3);
-      expect(simpleNode.length).to.equal(3);
     });
   });
 

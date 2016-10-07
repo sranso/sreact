@@ -13,16 +13,13 @@ const atts = {
   },
   'id': 'vdom'
 };
-const children = [
-  [
-    'p', {
-      'style': {
-        'font-size': '20px;'
-      }
-    },
-    [12345]
-  ]
-];
+const children = [createNode('p', { 'style': {
+      'font-size': '20px;'
+    }
+  },
+  [12345]
+)];
+
 const node = createNode('div', atts, children);
 
 /*

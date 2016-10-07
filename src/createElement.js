@@ -6,7 +6,7 @@ import { VirtualNode, VirtualText } from './createNode';
  *
  * node tree -> HTML string
  */
-const createElementNew = (node) => {
+const createElement = (node) => {
   if ( !(node instanceof VirtualNode) &&
        !(node instanceof VirtualText) ) {
     console.error(node);
@@ -21,22 +21,8 @@ const createElementNew = (node) => {
   const attString = Object.keys(attributes).map((att) => {
     return createElementAtt(att, attributes[att]);
   }).join(' ');
-  const childrenString = children.map(createElementNew).join('\n');
+  const childrenString = children.map(createElement).join('\n');
   return `<${elType} ${attString}>${childrenString}</${elType}>`;
-};
-
-const createElement = (node) => {
-  if (isStringOrNum(node)) {
-    return node;
-  }
-  if (node.length !== 3) {
-    console.error(node);
-    throw new Error('Please pass a valid node.');
-  }
-
-  const [elType, atts, children] = node;
-  const attString = Object.keys(atts).map((att) => createElementAtt(att, atts[att])).join(' ');
-  return `<${elType} ${attString}>${children.map(createElement).join('\n')}</${elType}>`;
 };
 
 const createElementAtt = (att, value) => {
@@ -59,6 +45,5 @@ export default createElement;
 export {
   createElement,
   createElementAtt,
-  createElementStyles,
-  createElementNew
+  createElementStyles
 };
