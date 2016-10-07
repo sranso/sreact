@@ -27,6 +27,7 @@ $ npm run test
 - [Preact](https://github.com/developit/preact)
 - [ES6 for Universal JS Apps](https://medium.com/javascript-scene/how-to-use-es6-for-isomorphic-javascript-apps-2a9c3abe5ea2#.xfoth6mdp)
 - [Virtual DOM](https://github.com/Matt-Esch/virtual-dom)
+- [Write your own Virtual DOM](https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060#.fess65wex)
 
 
 ###General Todos

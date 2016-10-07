@@ -5,21 +5,38 @@
  * children can be nodes (another tree) or strings/nums (leafs)
  */
 class VirtualText {
-  constructor (text) {
+  constructor(text) {
     this.text = text;
   }
-}
+};
 
 class VirtualNode {
-  constructor (elType, attributes, children) {
+  constructor(elType, attributes, children) {
     this.elType = elType;
     this.attributes = attributes;
-    this.children = children;
+    this.children = this._createChildren(children);
     this.id = VirtualNode.idCounter++;
   }
-}
+
+  _createChildren(children) {
+    const c = children.map((child) => {
+      if (child instanceof (VirtualNode || VirtualText)) {
+        return child;
+      } else if (typeof child === 'string') {
+        return new VirtualText(child);
+      } else {
+        return new VirtualNode(child);
+      }
+    });
+    return c;
+  }
+};
 
 VirtualNode.idCounter = 0;
+
+const createNodeNew = (elType, atts = {}, children = []) => {
+  return new VirtualNode(elType, atts, children);
+}
 
 const createNode = (elType, atts = {}, children = []) => {
   return [
@@ -33,5 +50,6 @@ const createNode = (elType, atts = {}, children = []) => {
 export default createNode;
 export {
   VirtualText,
-  VirtualNode
-}
+  VirtualNode,
+  createNodeNew
+};
