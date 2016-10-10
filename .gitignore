@@ -1,3 +1,7 @@
-node_modules/
 build/
+node_modules/
+nodes.html
 npm-debug.log
+test/test.bundle.js
+test/test.bundle.js.map
+virtual-dom-ex/

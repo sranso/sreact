@@ -4,8 +4,9 @@
   "description": "A simple, homemade version of React.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/ --watch --color --require babel-register",
-    "start": "webpack --watch --progress --color -d"
+    "test-cl": "mocha ./test/ --watch --color --require babel-register",
+    "test": "webpack --config webpack.config.test.js --watch --progress --color -d",
+    "start": "webpack --config webpack.config.js --watch --progress --color -d"
   },
   "keywords": [
     "React",

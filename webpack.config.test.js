@@ -1,8 +1,8 @@
 module.exports = {
-  entry: './diff.js',
+  entry: './test/index.js',
   output: {
     path: './',
-    filename: 'test.bundle.js'
+    filename: './test/test.bundle.js'
   },
   module: {
     loaders: [{
@@ -12,7 +12,3 @@ module.exports = {
     }]
   }
 };
-
-// TODO
-// require all names
-// module.exports those names

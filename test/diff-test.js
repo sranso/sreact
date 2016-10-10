@@ -1,4 +1,4 @@
-import { diff, walk, attsAreSame } from '../src/diff';
+import diff, { walk, attsAreSame } from '../src/diff';
 import createNode, { VirtualNode } from '../src/createNode';
 import VirtualPatch from '../src/createVirtualPatch';
 
