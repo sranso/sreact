@@ -98,7 +98,6 @@ const attsAreSame = (left, right) => {
 
 export default diff;
 export {
-  diff,
   walk,
   attsAreSame
 };

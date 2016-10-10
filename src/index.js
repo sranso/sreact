@@ -1,6 +1,7 @@
 import createNode from './createNode';
 import createElement from './createElement';
 import diff from './diff';
+import patch from './patch';
 
 /*
  * describe original dom
@@ -20,13 +21,13 @@ const children = [createNode('p', { 'style': {
   [12345]
 )];
 
-const node = createNode('div', atts, children);
+let rootTree = createNode('div', atts, children);
 
 /*
  * set original dom
  */
 const app = document.getElementById('app');
-app.innerHTML = createElement(node);
+app.innerHTML = createElement(rootTree);
 
 
 /*
@@ -44,5 +45,12 @@ const newTree = createNode('div', atts, newChildren);
 /*
  * grab patches
  */
-const patches = diff(node, newTree);
-console.log(patches);
+const patches = diff(rootTree, newTree);
+console.log('patches', patches);
+
+
+/*
+ * execute patch
+ */
+rootTree = patch(rootTree, patches);
+console.log('rootTree', rootTree);
