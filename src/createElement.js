@@ -17,12 +17,13 @@ const createElement = (node) => {
     return node.text;
   }
 
-  const { elType, attributes, children } = node;
+  const { elType, attributes, children, id } = node;
   const attString = Object.keys(attributes).map((att) => {
     return createElementAtt(att, attributes[att]);
   }).join(' ');
+  const dataId = `data-id="${id}"`;
   const childrenString = children.map(createElement).join('\n');
-  return `<${elType} ${attString}>${childrenString}</${elType}>`;
+  return `<${elType} ${attString} ${dataId}>${childrenString}</${elType}>`;
 };
 
 const createElementAtt = (att, value) => {

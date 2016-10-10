@@ -11,11 +11,11 @@ class VirtualText {
 };
 
 class VirtualNode {
-  constructor(elType, attributes, children) {
+  constructor(elType, attributes, children, id) {
     this.elType = elType;
     this.attributes = attributes;
     this.children = this._createChildren(children);
-    this.id = VirtualNode.idCounter++;
+    this.id = id || VirtualNode.idCounter++;
   }
 
   _createChildren(children) {
