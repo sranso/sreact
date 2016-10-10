@@ -30,18 +30,19 @@ app.innerHTML = createElement(node);
 
 
 /*
+ * get new virtual dom
+ */
+const newChild = createNode('p',
+  { 'id': 'new-kid' },
+  ['i\'m a new child']
+);
+const newChildren = children.slice();
+newChildren.push(newChild);
+const newTree = createNode('div', atts, newChildren);
+
+
+/*
  * grab patches
  */
-const child = [
-    'div', {
-      'style': {
-        'text': 'lots'
-      }
-    },
-    ['hi']
-];
-const newChildren = children.slice();
-newChildren.push(child);
-const newTree = createNode('div', atts, newChildren);
 const patches = diff(node, newTree);
 console.log(patches);

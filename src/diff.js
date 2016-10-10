@@ -1,11 +1,12 @@
+import VirtualPatch from './createVirtualPatch';
 /*
  * diff two trees
  *
  * left = 'old' tree; right = 'new' tree
  * return left node, replace operation(s) for left node
  */
-const diff = (a, b) => {
-  return Object.assign({ a }, walk(a, b, 0));
+const diff = (left, right) => {
+  return Object.assign({ left }, walk(left, right, 0));
 };
 
 /*
@@ -13,61 +14,76 @@ const diff = (a, b) => {
  * return patch objects
  * merge patch objects
  */
-const walk = (a, b, index) => {
-  if (a === b) {
+const walk = (left, right, index) => {
+  if (left === right) {
     return;
   }
 
   /* check if one is text node */
-  if (typeof a !== typeof b) {
-    return { [index]: b };
+  if (typeof left !== typeof right) {
+    if (!left) {
+      /* add new node */
+      return { [index]: right, type: 'ADD' };
+    } else {
+      /* delete node */
+      return { [index]: left, type: 'DEL' };
+    }
   }
 
-  const [aElType, aAtts, aChildren] = a;
-  const [bElType, bAtts, bChildren] = b;
+  const { elType: leftElType,
+          attributes: leftAtts,
+          children: leftChildren,
+          id: leftId } = left;
+  const { elType: rightElType,
+          attributes: rightAtts,
+          children: rightChildren,
+          id: rightId } = right;
+
   /* check el type */
-  if (aElType !== bElType) {
-    return { [index]: b };
+  if (leftElType !== rightElType) {
+    const patch = { [index]: right, type: 'REPL' };
+    return { [index]: new VirtualPatch(patch, left) };
   }
 
   /* check atts */
-  if (!attsAreSame(aAtts, bAtts)) {
-    return { [index]: b };
+  if (!attsAreSame(leftAtts, rightAtts)) {
+    const patch = { [index]: right, type: 'REPL' };
+    return { [index]: new VirtualPatch(patch, left) };
   }
 
   /* check children */
-  const maxChildren = (aChildren.length > bChildren.length) ? aChildren : bChildren;
+  const maxChildren = (leftChildren.length > rightChildren.length) ? leftChildren : rightChildren;
   const childPatchesArray = maxChildren.map((val, i, arr) => {
-    const aChild = aChildren[i];
-    const bChild = bChildren[i];
-    return walk(aChild, bChild, index + 1);
+    const leftChild = leftChildren[i];
+    const rightChild = rightChildren[i];
+    return walk(leftChild, rightChild, index + 1);
   });
   return childPatchesArray.reduce((acc, patch, i) => {
     if (patch) {
-      const patchI = index + 1 + i + 1;
-      acc[patchI] = patch;
+      const patchI = index + i;
+      acc[patchI] = new VirtualPatch(patch, left);
     }
     return acc;
   }, {});
 };
 
-const attsAreSame = (a, b) => {
-  const aKeys = Object.keys(a);
-  const bKeys = Object.keys(b);
+const attsAreSame = (left, right) => {
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
 
-  if (aKeys.length !== bKeys.length) {
+  if (leftKeys.length !== rightKeys.length) {
     return false;
   }
 
-  for (let i = 0; i < aKeys.length; i++) {
-    const key = aKeys[i];
-    if (a.hasOwnProperty(key) && b.hasOwnProperty(key)) {
+  for (let i = 0; i < leftKeys.length; i++) {
+    const key = leftKeys[i];
+    if (left.hasOwnProperty(key) && right.hasOwnProperty(key)) {
       if (key === 'style') {
-        if (!attsAreSame(a[key], b[key])) {
+        if (!attsAreSame(left[key], right[key])) {
           return false;
         }
       } else {
-        if (a[key] !== b[key]) {
+        if (left[key] !== right[key]) {
           return false;
         }
       }

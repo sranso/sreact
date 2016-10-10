@@ -1,5 +1,6 @@
 import { diff, walk, attsAreSame } from '../src/diff';
-import createNode from '../src/createNode';
+import createNode, { VirtualNode } from '../src/createNode';
+import VirtualPatch from '../src/createVirtualPatch';
 
 import assert from 'assert';
 import { expect } from 'chai';
@@ -7,8 +8,8 @@ import { expect } from 'chai';
 
 describe('diff module', () => {
   describe('walk', () => {
-    let atts, children, node;
-    beforeEach(() => {
+    let atts, children, left;
+    before(() => {
       atts = {
         'style': {
           'text-align': 'center',
@@ -17,78 +18,77 @@ describe('diff module', () => {
         },
         'id': 'vdom'
       };
-      children = [
-        [
-          'p', {
-            'style': {
-              'font-size': '20px;'
-            }
+      children = [createNode('p',
+        { 'style': {
+            'float': 'left'
           },
-          [12345]
-        ]
-      ];
-      node = createNode('div', atts, children);
+        'id': 'kid'
+        },
+        ['hi i\'m a child']
+      )];
+      left = createNode('div', atts, children);
     });
 
     it('should return an object that has the original left node', () => {
-      const patches = diff(node, node);
-      expect(patches).to.have.property('a');
+      const patches = diff(left, {});
+      expect(patches).to.have.property('left');
+      expect(patches.left).to.be.an.instanceof(VirtualNode);
     });
 
-    it('should return a new patch when the el type is different', () => {
-      const newTree = createNode('p', atts, children);
-      const patches = diff(node, newTree);
-      expect(patches[0][0]).to.equal('p');
-    });
-
-    it('should return a new patch when the atts are different', () => {
-      let newAtts = {
-        'style': {
-          'text-align': 'center',
-          'color': 'blue',
-          'margin': '20px'
-        },
-        'class': 'nah'
-      };
-      const newTree = createNode('div', newAtts, children);
-      const patches = diff(node, newTree);
-      expect(patches[0][0]).to.have.equal('div');
-      expect(patches[0][1]).to.have.property('class');
-    });
-
-    it('should return a new child patch when a child is different', () => {
-      const child = [
-        [
-          'div', {
-            'style': {
-              'text': 'lots'
-            }
-          },
-          ['hi']
-        ]
-      ];
-      const newTree = createNode('div', atts, child)
-      const patches = diff(node, newTree);
-      expect(patches[1][0]).to.equal('div');
-    });
-
-    it('should return an add child patch when a child is added', () => {
-      const child = [
-        [
-          'div', {
-            'style': {
-              'text': 'lots'
-            }
-          },
-          ['i\'m new here']
-        ]
-      ];
+    it('should return a patch when a node has been added', () => {
+      const newChild = createNode('p',
+        { 'id': 'new-kid' },
+        ['i\'m a new child']
+      );
       const newChildren = children.slice();
-      newChildren.push(child);
-      const newTree = createNode('div', atts, newChildren)
-      const patches = diff(node, newTree);
-      expect(patches[1][0]).to.equal('div');
+      newChildren.push(newChild);
+      const right = createNode('div', atts, newChildren);
+
+      const patches = diff(left, right);
+      const patchObj = patches[1];
+      const { patch, target } = patchObj;
+
+      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(patch.type).to.equal('ADD');
+      expect(target.elType).to.equal(left.elType);
     });
+
+    it('should return a patch when a node has been deleted', () => {
+      const right = createNode('div', atts, []);
+
+      const patches = diff(left, right);
+      const patchObj = patches[0];
+      const { patch, target } = patchObj;
+
+      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(patch.type).to.equal('DEL');
+      expect(target.elType).to.equal(left.elType);
+    });
+
+    it('should return a patch when a node has been replaced (elType)', () => {
+      const right = createNode('p', atts, children);
+
+      const patches = diff(left, right);
+      const patchObj = patches[0];
+      const { patch, target } = patchObj;
+
+      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(patch.type).to.equal('REPL');
+      expect(target.elType).to.equal(left.elType);
+    });
+
+    it('should return a patch when a node has been replaced (atts)', () => {
+      const right = createNode('div', { 'style': {} }, children);
+
+      const patches = diff(left, right);
+      const patchObj = patches[0];
+      const { patch, target } = patchObj;
+
+      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(patch.type).to.equal('REPL');
+      expect(target.elType).to.equal(left.elType);
+    });
+
   });
 
   describe('attsAreSame', () => {
