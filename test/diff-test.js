@@ -1,6 +1,7 @@
 import diff, { walk, attsAreSame } from '../src/diff';
-import createNode, { VirtualNode } from '../src/createNode';
+import { VirtualNode } from '../src/createNode';
 import VirtualPatch from '../src/createVirtualPatch';
+import Factories from './factories';
 
 import assert from 'assert';
 import { expect } from 'chai';
@@ -8,17 +9,9 @@ import { expect } from 'chai';
 
 describe('diff module', () => {
   describe('walk', () => {
-    let atts, children, left;
+    let children, left;
     before(() => {
-      atts = {
-        'style': {
-          'text-align': 'center',
-          'color': 'blue',
-          'margin': '20px'
-        },
-        'id': 'vdom'
-      };
-      children = [createNode('p',
+      children = [Factories.buildNode('p',
         { 'style': {
             'float': 'left'
           },
@@ -26,7 +19,7 @@ describe('diff module', () => {
         },
         ['hi i\'m a child']
       )];
-      left = createNode('div', atts, children);
+      left = Factories.buildNode('div', undefined, children);
     });
 
     it('should return an object that has the original left node', () => {
@@ -36,13 +29,13 @@ describe('diff module', () => {
     });
 
     it('should return a patch when a node has been added', () => {
-      const newChild = createNode('p',
+      const newChild = Factories.buildNode('p',
         { 'id': 'new-kid' },
         ['i\'m a new child']
       );
       const newChildren = children.slice();
       newChildren.push(newChild);
-      const right = createNode('div', atts, newChildren);
+      const right = Factories.buildNode('div', undefined, newChildren);
 
       const patches = diff(left, right);
       const patchObj = patches[1];
@@ -54,7 +47,7 @@ describe('diff module', () => {
     });
 
     it('should return a patch when a node has been deleted', () => {
-      const right = createNode('div', atts, []);
+      const right = Factories.buildNode('div', undefined, []);
 
       const patches = diff(left, right);
       const patchObj = patches[0];
@@ -66,7 +59,7 @@ describe('diff module', () => {
     });
 
     it('should return a patch when a node has been replaced (elType)', () => {
-      const right = createNode('p', atts, children);
+      const right = Factories.buildNode('p', undefined, children);
 
       const patches = diff(left, right);
       const patchObj = patches[0];
@@ -78,7 +71,7 @@ describe('diff module', () => {
     });
 
     it('should return a patch when a node has been replaced (atts)', () => {
-      const right = createNode('div', { 'style': {} }, children);
+      const right = Factories.buildNode('div', { 'style': {} }, children);
 
       const patches = diff(left, right);
       const patchObj = patches[0];

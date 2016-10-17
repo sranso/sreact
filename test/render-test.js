@@ -1,6 +1,7 @@
+import render from '../src/render';
+
 import { assert } from 'chai';
 import Factories from './factories';
-import render from '../src/render';
 
 describe('render module', () => {
   it('renders a virtual node into a dom node', () => {

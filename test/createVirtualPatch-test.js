@@ -1,6 +1,6 @@
-import createNode from '../src/createNode';
 import VirtualPatch from '../src/createVirtualPatch';
 
+import Factories from './factories';
 import { expect } from 'chai';
 
 
@@ -8,14 +8,8 @@ describe('createVirtualPatch module', () => {
   describe('VirtualPatch', () => {
     let patch;
     before(() => {
-      const p = createNode('p',
-        { 'id': 'patch-me-up' },
-        ['hehe']
-      );
-      const target = createNode('div',
-        { 'id': 'father' },
-        []
-      );
+      const p = Factories.buildNode('p');
+      const target = Factories.buildNode('div');
       patch = new VirtualPatch({ 0: p }, target);
     });
 

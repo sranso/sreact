@@ -3,8 +3,7 @@ import createElement, {
   createElementStyles
 } from '../src/createElement';
 
-import createNode from '../src/createNode';
-
+import Factories from './factories';
 import { expect } from 'chai';
 
 describe('createElement module', () => {
@@ -12,9 +11,7 @@ describe('createElement module', () => {
   describe('createElement', () => {
     let node;
     before(() => {
-      node = createNode('div', { style: { width: '100px' }, id: 'brb' }, [
-        createNode('p', { class: 'para' }, [ 'sup world' ])
-      ]);
+      node = Factories.buildNode('div', undefined, [ Factories.buildNode('p') ]);
     });
 
     it('should return an error if node is invalid', () => {
