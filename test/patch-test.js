@@ -2,7 +2,6 @@ import patch from '../src/patch';
 import diff from '../src/diff';
 import createNode, { VirtualNode } from '../src/createNode';
 
-import assert from 'assert';
 import { expect } from 'chai';
 
 
