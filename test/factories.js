@@ -18,7 +18,6 @@ const DEFAULT_CHILDREN = [createNode('p', { 'style': {
 
 
 const buildNode = (nodeType, atts = DEFAULT_ATTS, children = DEFAULT_CHILDREN) => {
-  console.log(atts, children);
   return createNode(nodeType, atts, children);
 }
 
