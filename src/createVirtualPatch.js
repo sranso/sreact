@@ -1,6 +1,7 @@
 class VirtualPatch {
-  constructor(patch, target) {
+  constructor(patch, type, target) {
     this.patch = patch;
+    this.type = type;
     this.target = target;
   }
 };

@@ -1,4 +1,7 @@
 import VirtualPatch from './createVirtualPatch';
+import { VirtualText } from './createNode';
+
+
 /*
  * diff two trees
  *
@@ -6,29 +9,32 @@ import VirtualPatch from './createVirtualPatch';
  * return left node, replace operation(s) for left node
  */
 const diff = (left, right) => {
-  return Object.assign({ left }, walk(left, right, 0));
+  return Object.assign({ left }, walk(left, right, left.id));
 };
 
-/*
- * TODO
- * return patch objects
- * merge patch objects
- */
-const walk = (left, right, index) => {
+const walk = (left, right, leftParentId) => {
   if (left === right) {
     return;
   }
 
-  /* check if one is text node */
+  /* check if there is an new node / node removed */
   if (typeof left !== typeof right) {
     if (!left) {
       /* add new node */
-      return { [index]: right, type: 'ADD' };
+      return { [leftParentId]: new VirtualPatch(right, 'ADD', left) };
     } else {
       /* delete node */
-      return { [index]: left, type: 'DEL' };
+      return { [leftParentId]: new VirtualPatch(left, 'DEL', left) };
     }
   }
+
+  /* check if text node */
+  if (left instanceof VirtualText && right instanceof VirtualText) {
+    if (left.text !== right.text) {
+      return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
+    }
+  }
+
 
   const { elType: leftElType,
           attributes: leftAtts,
@@ -41,14 +47,12 @@ const walk = (left, right, index) => {
 
   /* check el type */
   if (leftElType !== rightElType) {
-    const patch = { [index]: right, type: 'REPL' };
-    return { [index]: new VirtualPatch(patch, left) };
+    return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
   }
 
   /* check atts */
   if (!attsAreSame(leftAtts, rightAtts)) {
-    const patch = { [index]: right, type: 'REPL' };
-    return { [index]: new VirtualPatch(patch, left) };
+    return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
   }
 
   /* check children */
@@ -56,12 +60,11 @@ const walk = (left, right, index) => {
   const childPatchesArray = maxChildren.map((val, i, arr) => {
     const leftChild = leftChildren[i];
     const rightChild = rightChildren[i];
-    return walk(leftChild, rightChild, index + 1);
+    return walk(leftChild, rightChild, leftId);
   });
   return childPatchesArray.reduce((acc, patch, i) => {
     if (patch) {
-      const patchI = index + i;
-      acc[patchI] = new VirtualPatch(patch, left);
+      acc = Object.assign(acc, patch);
     }
     return acc;
   }, {});

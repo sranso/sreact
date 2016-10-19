@@ -9,7 +9,8 @@ const DEFAULT_ATTS = {
   'id': 'vdom'
 };
 
-const DEFAULT_CHILDREN = [createNode('p', { 'style': {
+const DEFAULT_CHILDREN = [
+  createNode('p', { 'style': {
       'font-size': '20px;'
     }
   },
@@ -19,7 +20,7 @@ const DEFAULT_CHILDREN = [createNode('p', { 'style': {
 
 const buildNode = (nodeType, atts = DEFAULT_ATTS, children = DEFAULT_CHILDREN) => {
   return createNode(nodeType, atts, children);
-}
+};
 
 export default {
   buildNode

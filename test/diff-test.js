@@ -7,6 +7,13 @@ import assert from 'assert';
 import { expect } from 'chai';
 
 
+const getKeysAndPatch = (patches) => {
+  const keys = Object.keys(patches);
+  const key = keys.filter(k => k !== 'left');
+  const patch = patches[key];
+  return { keys, patch };
+};
+
 describe('diff module', () => {
   describe('walk', () => {
     let children, left;
@@ -36,50 +43,42 @@ describe('diff module', () => {
       const newChildren = children.slice();
       newChildren.push(newChild);
       const right = Factories.buildNode('div', undefined, newChildren);
-
       const patches = diff(left, right);
-      const patchObj = patches[1];
-      const { patch, target } = patchObj;
+      const { keys, patch } = getKeysAndPatch(patches);
 
-      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(keys.length).to.equal(2);
+      expect(patch).to.be.an.instanceof(VirtualPatch);
       expect(patch.type).to.equal('ADD');
-      expect(target.elType).to.equal(left.elType);
     });
 
     it('should return a patch when a node has been deleted', () => {
       const right = Factories.buildNode('div', undefined, []);
-
       const patches = diff(left, right);
-      const patchObj = patches[0];
-      const { patch, target } = patchObj;
+      const { keys, patch } = getKeysAndPatch(patches);
 
-      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(keys.length).to.equal(2);
+      expect(patch).to.be.an.instanceof(VirtualPatch);
       expect(patch.type).to.equal('DEL');
-      expect(target.elType).to.equal(left.elType);
     });
 
     it('should return a patch when a node has been replaced (elType)', () => {
       const right = Factories.buildNode('p', undefined, children);
-
       const patches = diff(left, right);
-      const patchObj = patches[0];
-      const { patch, target } = patchObj;
+      const { keys, patch } = getKeysAndPatch(patches);
 
-      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(keys.length).to.equal(2);
+      expect(patch).to.be.an.instanceof(VirtualPatch);
       expect(patch.type).to.equal('REPL');
-      expect(target.elType).to.equal(left.elType);
     });
 
     it('should return a patch when a node has been replaced (atts)', () => {
       const right = Factories.buildNode('div', { 'style': {} }, children);
-
       const patches = diff(left, right);
-      const patchObj = patches[0];
-      const { patch, target } = patchObj;
+      const { keys, patch } = getKeysAndPatch(patches);
 
-      expect(patchObj).to.be.an.instanceof(VirtualPatch);
+      expect(keys.length).to.equal(2);
+      expect(patch).to.be.an.instanceof(VirtualPatch);
       expect(patch.type).to.equal('REPL');
-      expect(target.elType).to.equal(left.elType);
     });
 
   });
