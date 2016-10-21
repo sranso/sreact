@@ -37,17 +37,30 @@ const applyPatches = (indices, patches) => {
   };
 };
 
-const applyPatch = (targetNode, patch) => {
-  const { patch: patchNode, type } = patch;
+const findChild = ($parentNode, target) => {
+  for (var child of $parentNode.childNodes) {
+    if (child.dataset.id == target.id) {
+      return child
+    }
+  }
+}
+
+const applyPatch = ($targetNode, patch) => {
+  const { patch: patchNode, type, target } = patch;
   let el;
   if (type === 'DEL') {
-    targetNode.innerHTML = '';
+    $targetNode.removeChild(
+      findChild($targetNode, target)
+    )
   } else if (type === 'ADD') {
     el = createElement(patchNode);
-    targetNode.innerHTML += el;
+    $targetNode.appendChild(el);
   } else if (type === 'REPL') {
     el = createElement(patchNode);
-    targetNode.innerHTML = el;
+    $targetNode.replaceChild(
+      el,
+      findChild($targetNode, target)
+    );
   }
 };
 

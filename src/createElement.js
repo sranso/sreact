@@ -14,37 +14,25 @@ const createElement = (node) => {
   }
 
   if (node instanceof VirtualText) {
-    return node.text;
+    const $text = document.createElement('span');
+    $text.appendChild(
+      document.createTextNode(node.text)
+    );
+    $text.setAttribute('data-id', node.id);
+    return $text;
   }
 
   const { elType, attributes, children, id } = node;
-  const attString = Object.keys(attributes).map((att) => {
-    return createElementAtt(att, attributes[att]);
-  }).join(' ');
-  const dataId = `data-id="${id}"`;
-  const childrenString = children.map(createElement).join('\n');
-  return `<${elType} ${attString} ${dataId}>${childrenString}</${elType}>`;
-};
-
-const createElementAtt = (att, value) => {
-  if (att === 'style') {
-    return createElementStyles(value);
-  } else {
-    return `${att}="${value}"`;
-  }
-};
-
-const createElementStyles = (stylesMap) => {
-  const stylesString = Object.keys(stylesMap).map((key) => {
-    return `${key}: ${stylesMap[key]}`;
-  }).join('; ');
-  return `style="${stylesString}"`;
+  const el = document.createElement(elType);
+  Object.keys(attributes).forEach((k) => {
+    const v = attributes[k];
+    el.setAttribute(k, v);
+  });
+  children.map(createElement)
+    .forEach(el.appendChild.bind(el));
+  el.setAttribute('data-id', id);
+  return el;
 };
 
 
 export default createElement;
-export {
-  createElement,
-  createElementAtt,
-  createElementStyles
-};
