@@ -24,10 +24,7 @@ $ npm run test
 
 ###Resources:
 - [React](https://github.com/facebook/react)
-- [Preact](https://github.com/developit/preact)
-- [Virtual DOM](https://github.com/Matt-Esch/virtual-dom)
 - [ES6 for Universal JS Apps](https://medium.com/javascript-scene/how-to-use-es6-for-isomorphic-javascript-apps-2a9c3abe5ea2#.xfoth6mdp)
-- [Write your own Virtual DOM](https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060#.fess65wex)
 - [React implementation notes](https://facebook.github.io/react/contributing/implementation-notes.html)
 
 
@@ -35,10 +32,9 @@ $ npm run test
 - add eslint
 - use https://github.com/paul-jean/dom-viz to see if correct divs are changing
 - handle img tags (no children will break!), p tags with a tags inside
-- add tests in browser (mocha)
 
 
-###Virtual DOM Todos/Steps
+###Virtual DOM Steps
 1. create virtual DOM, eg what original DOM should look like
 2. append virtual DOM to actual DOM
 3. listen for updates from components
@@ -46,3 +42,10 @@ $ npm run test
 5. diff the virtual DOM with actual DOM (-> patches)
 6. patch original DOM with patches
 7. start again from step 3
+
+
+###other-examples/
+Examples of a virtual DOM from other places. To compile, run `webpack` from the directory.
+- [virtual-dom-medium/](https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060#.fess65wex)
+- [virtual-dom-npm/](https://github.com/Matt-Esch/virtual-dom)
+- [preact/](https://github.com/developit/preact)

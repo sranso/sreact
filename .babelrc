@@ -1,4 +1,9 @@
 {
   "presets": ["es2015"],
-  "plugins": ["transform-runtime"]
+  "plugins": [
+    "transform-runtime",
+    ["transform-react-jsx", {
+      "pragma": "h" // default pragma is React.createElement
+    }]
+  ]
 }
