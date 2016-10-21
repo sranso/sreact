@@ -9,7 +9,7 @@ import { VirtualText } from './createNode';
  * return left node, replace operation(s) for left node
  */
 const diff = (left, right) => {
-  return Object.assign({ left }, walk(left, right, left.id));
+  return Object.assign({ left }, walk(left, right, 0));
 };
 
 const walk = (left, right, leftParentId) => {

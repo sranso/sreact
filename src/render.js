@@ -2,7 +2,7 @@ import createElement from './createElement';
 
 
 const render = (vRoot, domRoot) => {
-  domRoot.innerHTML = createElement(vRoot);
+  domRoot.appendChild(createElement(vRoot));
 }
 
 

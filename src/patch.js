@@ -39,7 +39,7 @@ const applyPatches = (indices, patches) => {
 
 const findChild = ($parentNode, target) => {
   for (var child of $parentNode.childNodes) {
-    if (child.dataset.id == target.id) {
+    if (Number(child.dataset.id) == target.id) {
       return child
     }
   }

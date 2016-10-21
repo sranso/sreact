@@ -11,11 +11,10 @@ class VirtualText {
 };
 
 class VirtualNode {
-  constructor(elType, attributes, children, id) {
+  constructor(elType, attributes, children) {
     this.elType = elType;
     this.attributes = attributes;
     this.children = this._createChildren(children);
-    this.id = id || VirtualNode.idCounter++;
   }
 
   _createChildren(children) {
@@ -32,8 +31,6 @@ class VirtualNode {
     return c;
   }
 };
-
-VirtualNode.idCounter = 0;
 
 const createNode = (elType, atts = {}, children = []) => {
   return new VirtualNode(elType, atts, children);
