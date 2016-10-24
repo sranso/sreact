@@ -1,6 +1,6 @@
 import diff, { walk, attsAreSame } from '../src/diff';
-import { VirtualNode } from '../src/createNode';
-import VirtualPatch from '../src/createVirtualPatch';
+import { VirtualNode } from '../src/constructors/VirtualNode';
+import VirtualPatch from '../src/constructors/VirtualPatch';
 import Factories from './factories';
 
 import assert from 'assert';

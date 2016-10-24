@@ -1,5 +1,5 @@
-import VirtualPatch from './createVirtualPatch';
-import { VirtualText } from './createNode';
+import VirtualPatch from './constructors/VirtualPatch';
+import { VirtualText } from './constructors/VirtualNode';
 
 
 /*

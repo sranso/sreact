@@ -1,5 +1,4 @@
 import createElement, {
-  createElementAtt,
   createElementStyles
 } from '../src/createElement';
 
@@ -18,29 +17,19 @@ describe('createElement module', () => {
       expect(createElement).to.throw(Error);
     });
 
-
-    it('should return an html string', () => {
-      expect(createElement(node)).to.be.have.string('<div');
-      expect(createElement(node)).to.be.have.string('</div>');
-      expect(createElement(node)).to.be.have.string('<p');
-      expect(createElement(node)).to.be.have.string('</p>');
+    it('should return a dom node with attributes', () => {
+      const $el = createElement(node);
+      expect($el).to.be.an.instanceof(Node);
+      expect($el.style.textAlign).to.equal('center');
     });
 
-  });
-
-  describe('createElementAtt', () => {
-    it('should return an html atts string', () => {
-      expect(createElementAtt('id', 'sup')).to.have.string('id="sup"');
-      expect(createElementAtt('src', '/some/place')).to.have.string('src="/some/place"');
-      expect(createElementAtt('title', 'the best thing ever')).to.have.string('title="the best thing ever"');
-    });
   });
 
   describe('createElementStyles', () => {
     it('should return an html styles atts string', () => {
-      expect(createElementStyles({'width': '20px', 'height': '10px'})).to.have.string('width: 20px');
-      expect(createElementStyles({'width': '20px', 'height': '10px'})).to.have.string('height: 10px');
-      expect(createElementStyles({'width': '20px', 'height': '10px'})).to.have.string('style=');
+      const styles = createElementStyles({'width': '20px', 'height': '10px'});
+      expect(styles).to.have.string('width: 20px');
+      expect(styles).to.have.string('height: 10px');
     });
   });
 

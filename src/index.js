@@ -1,4 +1,5 @@
-import createNode, { VirtualNode } from './createNode';
+import createNode from './createNode';
+import { VirtualNode } from './constructors/VirtualNode';
 import createElement from './createElement';
 import diff from './diff';
 import patch from './patch';
@@ -24,11 +25,4 @@ setInterval(() => {
   // (DOM, patches) -> DOM
   rootNode = patch(rootNode, patches);
   tree = newTree;
-  /*
-   * this works, but only because we're modifying the
-   * original DOM each time. we're not keeping track
-   * of the latest virtual DOM anymore.
-   * so, that's a TODO, hah.
-   */
-  // rootTree = newTree;
 }, 1000);

@@ -1,4 +1,5 @@
-import VirtualPatch from './createVirtualPatch';
+import VirtualPatch from './constructors/VirtualPatch';
+import { VirtualText } from './constructors/VirtualNode';
 import createElement from './createElement';
 
 /*
@@ -40,10 +41,10 @@ const applyPatches = (indices, patches) => {
 const findChild = ($parentNode, target) => {
   for (var child of $parentNode.childNodes) {
     if (Number(child.dataset.id) == target.id) {
-      return child
+      return child;
     }
   }
-}
+};
 
 const applyPatch = ($targetNode, patch) => {
   const { patch: patchNode, type, target } = patch;

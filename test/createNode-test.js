@@ -1,41 +1,9 @@
-import createNode, { VirtualText, VirtualNode } from '../src/createNode';
+import createNode from '../src/createNode';
+import { VirtualText, VirtualNode } from '../src/constructors/VirtualNode';
 
 import { expect } from 'chai';
 
 describe('createNode module', () => {
-  describe('VirtualText', () => {
-    it('should return a virtual text node with a text value', () => {
-      const textNode = new VirtualText('sup');
-      expect(textNode).to.have.property('text');
-    });
-  });
-
-  describe('VirtualNode', () => {
-    let node;
-    before(() => {
-      node = new VirtualNode('div', { styles: { width: '1px' }, id: 'v' }, []);
-    });
-
-    it('should return a virtual node object', () => {
-      expect(node).to.be.instanceof(VirtualNode);
-    });
-
-    it('should return a virtual node with an id', () => {
-      expect(node).to.contain.all.keys(['id', 'elType', 'attributes', 'children']);
-    });
-
-    it('should increment id', () => {
-      const newNode = new VirtualNode('div', {}, []);
-      expect(node.id).to.not.equal(newNode.id);
-    });
-
-    it('should allow nested children to be made', () => {
-      const child = new VirtualNode('p', {}, ['hay']);
-      const newNode = new VirtualNode('div', {}, [child]);
-      expect(newNode.children[0].elType).to.equal('p');
-    });
-  });
-
   describe('createNode', () => {
     let node;
     before(() => {
@@ -57,5 +25,4 @@ describe('createNode module', () => {
       expect(pNode.children[0]).to.be.an.instanceof(VirtualText);
     });
   });
-
 });

@@ -9,10 +9,9 @@ class VirtualPatch {
       addIds(patch);
     }
 
-    if (type === 'REPL') {
+    if (type === 'REPL' && target.id) {
       patch.id = target.id;
     }
-
   }
 };
 
@@ -24,6 +23,6 @@ const addIds = patch => {
   }
 };
 
-VirtualPatch.IdCounter = 0;
+VirtualPatch.IdCounter = 1;
 
 export default VirtualPatch;
