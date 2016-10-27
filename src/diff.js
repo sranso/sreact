@@ -1,92 +1,93 @@
 import VirtualPatch from './constructors/VirtualPatch';
 import { VirtualText } from './constructors/VirtualNode';
+import createElement from './createElement';
 
 
 /*
  * diff two trees
  *
- * left = 'old' tree; right = 'new' tree
- * return left node, replace operation(s) for left node
+ * return array of patches
  */
-const diff = (left, right) => {
-  return Object.assign({ left }, walk(left, right, 0));
+const diff = (oldTree, newTree) => {
+  return walk(oldTree.children[0], newTree, oldTree);
 };
 
-const walk = (left, right, leftParentId) => {
-  if (left === right) {
+const walk = (oldTree, newTree, parentNode) => {
+  if (oldTree === newTree) {
     return;
   }
 
-  /* check if there is an new node / node removed */
-  if (typeof left !== typeof right) {
-    if (!left) {
-      /* add new node */
-      return { [leftParentId]: new VirtualPatch(right, 'ADD', left) };
+  if (!oldTree) {
+    // ADD
+    newTree.$el = createElement(newTree);
+    recursivelyAssignEls(newTree.$el, newTree);
+    return [new VirtualPatch(newTree, parentNode, 'ADD')];
+  } else if (!newTree) {
+    // DEL
+    return [new VirtualPatch(oldTree, parentNode, 'DEL')];
+  } else {
+    if ( (oldTree instanceof VirtualText && newTree instanceof VirtualText &&
+                oldTree.text !== newTree.text) ||
+                oldTree.elType !== newTree.elType ||
+                !attsAreSame(oldTree.attributes, newTree.attributes) ) {
+      // REPL
+      // a. is text node with diff values
+      // b. are different types
+      // c. have different attributes
+      // TODO: only change the atts, not entire node
+      newTree.$el = createElement(newTree);
+      recursivelyAssignEls(newTree.$el, newTree);
+      return [new VirtualPatch(newTree, parentNode, 'REPL', oldTree)];
     } else {
-      /* delete node */
-      return { [leftParentId]: new VirtualPatch(left, 'DEL', left) };
+      // check children
+      // TODO: allow for individual children to change, rather than modifying
+      // all children after a changed node
+
+      newTree.$el = oldTree.$el;
+
+      const maxChildren = Math.max(oldTree.children.length, newTree.children.length);
+      let childPatchesArray = [];
+
+      for (let i = 0; i <= maxChildren; i++) {
+        const oldTreeChild = oldTree.children[i];
+        const newTreeChild = newTree.children[i];
+        const childPatch = walk(oldTreeChild, newTreeChild, oldTree);
+        if (childPatch) {
+          childPatchesArray = childPatchesArray.concat(childPatch);
+        }
+      }
+      return childPatchesArray;
     }
   }
 
-  /* check if text node */
-  if (left instanceof VirtualText && right instanceof VirtualText) {
-    if (left.text !== right.text) {
-      return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
-    }
-  }
-
-
-  const { elType: leftElType,
-          attributes: leftAtts,
-          children: leftChildren,
-          id: leftId } = left;
-  const { elType: rightElType,
-          attributes: rightAtts,
-          children: rightChildren,
-          id: rightId } = right;
-
-  /* check el type */
-  if (leftElType !== rightElType) {
-    return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
-  }
-
-  /* check atts */
-  if (!attsAreSame(leftAtts, rightAtts)) {
-    return { [leftParentId]: new VirtualPatch(right, 'REPL', left) };
-  }
-
-  /* check children */
-  const maxChildren = (leftChildren.length > rightChildren.length) ? leftChildren : rightChildren;
-  const childPatchesArray = maxChildren.map((val, i, arr) => {
-    const leftChild = leftChildren[i];
-    const rightChild = rightChildren[i];
-    return walk(leftChild, rightChild, leftId);
-  });
-  return childPatchesArray.reduce((acc, patch, i) => {
-    if (patch) {
-      acc = Object.assign(acc, patch);
-    }
-    return acc;
-  }, {});
 };
 
-const attsAreSame = (left, right) => {
-  const leftKeys = Object.keys(left);
-  const rightKeys = Object.keys(right);
+const recursivelyAssignEls = (node, newTree) => {
+  newTree.$el = node;
+  if (node.childNodes && node.nodeType !== 3) {
+    for (let i = 0; i < node.childNodes.length; i++) {
+      recursivelyAssignEls(node.childNodes[i], newTree.children[i]);
+    }
+  }
+};
 
-  if (leftKeys.length !== rightKeys.length) {
+const attsAreSame = (oldTree, newTree) => {
+  const oldTreeKeys = Object.keys(oldTree);
+  const newTreeKeys = Object.keys(newTree);
+
+  if (oldTreeKeys.length !== newTreeKeys.length) {
     return false;
   }
 
-  for (let i = 0; i < leftKeys.length; i++) {
-    const key = leftKeys[i];
-    if (left.hasOwnProperty(key) && right.hasOwnProperty(key)) {
+  for (let i = 0; i < oldTreeKeys.length; i++) {
+    const key = oldTreeKeys[i];
+    if (oldTree.hasOwnProperty(key) && newTree.hasOwnProperty(key)) {
       if (key === 'style') {
-        if (!attsAreSame(left[key], right[key])) {
+        if (!attsAreSame(oldTree[key], newTree[key])) {
           return false;
         }
       } else {
-        if (left[key] !== right[key]) {
+        if (oldTree[key] !== newTree[key]) {
           return false;
         }
       }
@@ -102,5 +103,6 @@ const attsAreSame = (left, right) => {
 export default diff;
 export {
   walk,
-  attsAreSame
+  attsAreSame,
+  recursivelyAssignEls
 };

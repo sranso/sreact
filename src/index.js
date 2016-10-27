@@ -1,28 +1,23 @@
 import createNode from './createNode';
-import { VirtualNode } from './constructors/VirtualNode';
-import createElement from './createElement';
-import diff from './diff';
-import patch from './patch';
 import render from './render';
 
 
-let count = 0;
+let tree = createNode('div', { id: 'parent' }, [
+  createNode('div', { id: 'middle' }, [
+    createNode('p', { id: 'child' }, [ 'this will change just u wait' ])
+  ])
+]);
+const domRoot = document.getElementById('root');
 
-let tree = createNode('div', {}, [count], true);
+render(tree, domRoot);
 
-// Add everything to initial tree
-let initialPatch = diff(new VirtualNode('', {}, []), tree)
-let rootNode = patch(document.getElementById('app'), initialPatch)
-
-render(tree, rootNode);
-
+let word = 'muaha';
 setInterval(() => {
-  count += 1;
-  // params -> VirtualNode
-  let newTree = createNode('div', {}, [count]);
-  // (VirtualNode, VirtualNode) -> { patches }
-  let patches = diff(tree, newTree);
-  // (DOM, patches) -> DOM
-  rootNode = patch(rootNode, patches);
-  tree = newTree;
+  let newTree = createNode('div', { id: 'parent' }, [
+    createNode('div', { id: 'middle' }, [
+      createNode('p', { id: 'child' }, [ word ])
+    ])
+  ]);
+  word += ' ha';
+  render(newTree, domRoot);
 }, 1000);

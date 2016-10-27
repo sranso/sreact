@@ -1,9 +1,9 @@
 import { VirtualNode, VirtualText } from './constructors/VirtualNode';
 
 /*
- * create an HTML node element or simple textNode as html string
+ * create an HTML node element or text node
  *
- * node tree -> HTML string
+ * node tree -> HTML element
  */
 const createElement = (node) => {
   if ( !(node instanceof VirtualNode) &&
@@ -13,12 +13,7 @@ const createElement = (node) => {
   }
 
   if (node instanceof VirtualText) {
-    const $text = document.createElement('span');
-    $text.setAttribute('data-id', node.id);
-    $text.appendChild(
-      document.createTextNode(node.text)
-    );
-    return $text;
+    return document.createTextNode(node.text)
   }
 
   const { elType, attributes, children, id } = node;
@@ -31,7 +26,6 @@ const createElement = (node) => {
       $el.setAttribute(k, attributes[k]);
     }
   });
-  $el.setAttribute('data-id', id);
 
   children.map(createElement)
     .forEach($el.appendChild.bind($el));
