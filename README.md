@@ -24,8 +24,9 @@ $ npm run test
 
 ###Resources:
 - [React](https://github.com/facebook/react)
+  - https://facebook.github.io/react/contributing/implementation-notes.html
+  - https://facebook.github.io/react/docs/reconciliation.html
 - [ES6 for Universal JS Apps](https://medium.com/javascript-scene/how-to-use-es6-for-isomorphic-javascript-apps-2a9c3abe5ea2#.xfoth6mdp)
-- [React implementation notes](https://facebook.github.io/react/contributing/implementation-notes.html)
 
 
 ###General Todos
@@ -43,6 +44,30 @@ $ npm run test
 6. patch original DOM with patches
 7. start again from step 3
 
+
+###Approaches taken
+- general
+  - use classes (eg VirtualPatch)
+- createElement
+  - returns string
+  - returns dom node
+- diff
+  - store reference to target note
+  - store path to target note
+  - return an object of patches with keys as indices, values as patches
+  - create elements while diffing
+  - return an array of patches
+- patch
+  - apply patch while traversing vdom
+  - apply patch while traversing real dom
+- nodes
+  - elm-like div representation, no ids (eg `['p', { id: 'blue' }, [ 'hello world' ]]`)
+  - use simple objects, with ids (eg factories)
+  - createNode returns obj
+  - createNode returns dom node
+  - keep track of ids, every vnode gets an id
+  - only give ids to vnodes that need them
+  - give no nodes ids; instead, give them reference to their dom el
 
 ###other-examples/
 Examples of a virtual DOM from other places. To compile, run `webpack` from the directory.
