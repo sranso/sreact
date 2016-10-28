@@ -17,11 +17,20 @@ const DEFAULT_CHILDREN = [
   [12345]
 )];
 
+const buildRootNode = (nodeType, atts = DEFAULT_ATTS, children = DEFAULT_CHILDREN) => {
+  const root = createNode(
+    'div',
+    { id: 'root' },
+    [createNode(nodeType, atts, children)]
+  );
+  return root;
+};
 
 const buildNode = (nodeType, atts = DEFAULT_ATTS, children = DEFAULT_CHILDREN) => {
   return createNode(nodeType, atts, children);
 };
 
 export default {
-  buildNode
+  buildNode,
+  buildRootNode
 };

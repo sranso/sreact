@@ -1,4 +1,4 @@
-import diff, { walk, attsAreSame } from '../src/diff';
+import diff, { walk, attsAreSame, recursivelyAssignEls } from '../src/diff';
 import { VirtualNode } from '../src/constructors/VirtualNode';
 import VirtualPatch from '../src/constructors/VirtualPatch';
 import Factories from './factories';
@@ -7,80 +7,56 @@ import assert from 'assert';
 import { expect } from 'chai';
 
 
-const getKeysAndPatch = (patches) => {
-  const keys = Object.keys(patches);
-  const key = keys.filter(k => k !== 'left');
-  const patch = patches[key];
-  return { keys, patch };
-};
-
 describe('diff module', () => {
   describe('walk', () => {
-    let children, left;
-    before(() => {
-      children = [Factories.buildNode('p',
-        { 'style': {
-            'float': 'left'
-          },
-        'id': 'kid'
-        },
-        ['hi i\'m a child']
-      )];
-      left = Factories.buildNode('div', undefined, children);
-    });
-
-    it('should return an object that has the original left node', () => {
-      const patches = diff(left, {});
-      expect(patches).to.have.property('left');
-      expect(patches.left).to.be.an.instanceof(VirtualNode);
+    it('should return an array of patches', () => {
+      const oldTree = Factories.buildRootNode('div', undefined, []);
+      const patches = diff(oldTree, Factories.buildNode('p', undefined, []));
+      expect(patches).to.be.an.instanceof(Array);
+      expect(patches[0]).to.be.an.instanceof(VirtualPatch);
     });
 
     it('should return a patch when a node has been added', () => {
+      const oldTree = Factories.buildRootNode('div', undefined, []);
       const newChild = Factories.buildNode('p',
         { 'id': 'new-kid' },
         ['i\'m a new child']
       );
-      const newChildren = children.slice();
-      newChildren.push(newChild);
-      const right = Factories.buildNode('div', undefined, newChildren);
-      const patches = diff(left, right);
-      const { keys, patch } = getKeysAndPatch(patches);
+      const newTree = Factories.buildNode('div', undefined, [newChild]);
+      const patches = diff(oldTree, newTree);
 
-      expect(keys.length).to.equal(2);
-      expect(patch).to.be.an.instanceof(VirtualPatch);
-      expect(patch.type).to.equal('ADD');
+      expect(patches.length).to.equal(1);
+      expect(patches[0].type).to.equal('ADD');
     });
 
     it('should return a patch when a node has been deleted', () => {
-      const right = Factories.buildNode('div', undefined, []);
-      const patches = diff(left, right);
-      const { keys, patch } = getKeysAndPatch(patches);
+      const oldTree = Factories.buildRootNode('div', undefined, [
+        Factories.buildNode('div', undefined, ['hi'])
+      ]);
+      const newTree = Factories.buildNode('div', undefined, []);
+      const patches = diff(oldTree, newTree);
 
-      expect(keys.length).to.equal(2);
-      expect(patch).to.be.an.instanceof(VirtualPatch);
-      expect(patch.type).to.equal('DEL');
+      expect(patches.length).to.equal(1);
+      expect(patches[0].type).to.equal('DEL');
     });
 
     it('should return a patch when a node has been replaced (elType)', () => {
-      const right = Factories.buildNode('p', undefined, children);
-      const patches = diff(left, right);
-      const { keys, patch } = getKeysAndPatch(patches);
+      const oldTree = Factories.buildRootNode('div', undefined, ['hello']);
+      const newTree = Factories.buildNode('div', undefined, ['hi']);
+      const patches = diff(oldTree, newTree);
 
-      expect(keys.length).to.equal(2);
-      expect(patch).to.be.an.instanceof(VirtualPatch);
-      expect(patch.type).to.equal('REPL');
+      expect(patches.length).to.equal(1);
+      expect(patches[0].type).to.equal('REPL');
     });
 
     it('should return a patch when a node has been replaced (atts)', () => {
-      const right = Factories.buildNode('div', { 'style': {} }, children);
-      const patches = diff(left, right);
-      const { keys, patch } = getKeysAndPatch(patches);
+      const oldTree = Factories.buildRootNode('div', { id: 'parent' }, []);
+      const newTree = Factories.buildNode('div', { id: 'new-parent' }, []);
+      const patches = diff(oldTree, newTree);
 
-      expect(keys.length).to.equal(2);
-      expect(patch).to.be.an.instanceof(VirtualPatch);
-      expect(patch.type).to.equal('REPL');
+      expect(patches.length).to.equal(1);
+      expect(patches[0].type).to.equal('REPL');
     });
-
   });
 
   describe('attsAreSame', () => {

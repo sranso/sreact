@@ -13,7 +13,6 @@ describe('VirtualPatch constructor', () => {
   });
 
   it('should return an object with a patch and a target', () => {
-    expect(patch).to.have.property('patch');
-    expect(patch).to.have.property('target');
+    expect(patch).to.contain.all.keys(['patchNode', 'parentNode', 'type', 'replTarget']);
   });
 });

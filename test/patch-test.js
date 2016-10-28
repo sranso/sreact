@@ -1,4 +1,4 @@
-import patch, { applyPatches, applyPatch, walkDOM } from '../src/patch';
+import patch, { applyPatch } from '../src/patch';
 import diff from '../src/diff';
 import render from '../src/render';
 import createNode, { VirtualNode } from '../src/createNode';
@@ -24,13 +24,7 @@ describe('patch module', () => {
     it('should replace the actual DOM', () => {
       const patches = diff(rootTree, newTree);
       const result = patch(domNode, patches);
-      expect(result.firstChild.firstChild.innerHTML).to.equal('replaced the old');
-    });
-  });
-
-  describe('applyPatches', () => {
-    it('should return a function', () => {
-      expect(applyPatches([1,2,3], {})).to.be.a.func;
+      expect(result.innerText).to.equal('replaced the old');
     });
   });
 
@@ -66,21 +60,6 @@ describe('patch module', () => {
       const patches = diff(rootTree, newTree);
       const result = patch(domNode, patches);
       expect(result.firstChild.firstChild.innerHTML).to.equal('replaced the old');
-    });
-  });
-
-  describe('walkDOM', () => {
-    let domNode;
-    before(() => {
-      domNode = document.getElementById('app');
-      domNode.innerHTML = '';
-    });
-
-    it('should walk the dom', () => {
-      domNode.appendChild(document.createElement('p'));
-      const spy = chai.spy();
-      walkDOM(domNode, spy);
-      expect(spy).to.have.been.called.twice;
     });
   });
 
