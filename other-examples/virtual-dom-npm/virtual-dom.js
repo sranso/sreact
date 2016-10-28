@@ -35,9 +35,6 @@ document.body.appendChild(rootNode);    // ... and it should be in the document
 setInterval(function () {
       count++;
       
-      // if (Math.random() > 0.5) {
-      //   var p = h('p', {}, ['sup bruh']);
-      // }
       var newTree = render(count);
       var patches = diff(tree, newTree); // find differences
       rootNode = patch(rootNode, patches); // apply differences
