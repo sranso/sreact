@@ -5,10 +5,11 @@ import createElement from './createElement';
 /*
  * apply patches to root tree
  *
- * apply patches to domNode and return updated domNode
+ * apply patches to dom nodes
  */
 const patch = (domNode, patches) => {
-  patches.forEach(applyPatch);
+  // need to reverse patches so they get applied in order
+  patches.reverse().forEach(applyPatch);
 
   return domNode;
 };
