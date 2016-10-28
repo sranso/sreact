@@ -46,6 +46,9 @@ $ npm run test
 
 
 ###Approaches taken
+- render
+  - just render into doc
+  - hold all logic around diffing and patching, plus reference to the latest tree
 - general
   - use classes (eg VirtualPatch)
 - createElement
