@@ -25,13 +25,20 @@ const walk = (oldTree, newTree, parentNode) => {
   } else if (!newTree) {
     // DEL
     return [new VirtualPatch(oldTree, parentNode, 'DEL')];
-  } else {
-    if ( (oldTree instanceof VirtualText && newTree instanceof VirtualText &&
-                oldTree.text !== newTree.text) ||
-                oldTree.elType !== newTree.elType ||
-                !attsAreSame(oldTree.attributes, newTree.attributes) ) {
+  } else if (oldTree instanceof VirtualText && newTree instanceof VirtualText) {
+    if (oldTree.text !== newTree.text) {
       // REPL
       // a. is text node with diff values
+      newTree.$el = createElement(newTree);
+      recursivelyAssignEls(newTree.$el, newTree);
+      return [new VirtualPatch(newTree, parentNode, 'REPL', oldTree)];
+    } else {
+      return;
+    }
+  } else {
+    if ( oldTree.elType !== newTree.elType ||
+         !attsAreSame(oldTree.attributes, newTree.attributes) ) {
+      // REPL
       // b. are different types
       // c. have different attributes
       // TODO: only change the atts, not entire node
@@ -71,30 +78,32 @@ const recursivelyAssignEls = (node, newTree) => {
   }
 };
 
-const attsAreSame = (oldTree, newTree) => {
-  if (!oldTree.attributes || !newTree.attributes) return false;
+const attsAreSame = (oldTreeAtts, newTreeAtts) => {
+  if (!oldTreeAtts || !newTreeAtts) return true;
 
-  const oldTreeKeys = Object.keys(oldTree);
-  const newTreeKeys = Object.keys(newTree);
+  const oldTreeAttsKeys = Object.keys(oldTreeAtts);
+  const newTreeAttsKeys = Object.keys(newTreeAtts);
 
-  if (oldTreeKeys.length !== newTreeKeys.length) {
+  if (oldTreeAttsKeys.length !== newTreeAttsKeys.length) {
     return false;
   }
 
-  for (let i = 0; i < oldTreeKeys.length; i++) {
-    const key = oldTreeKeys[i];
-    if (oldTree.hasOwnProperty(key) && newTree.hasOwnProperty(key)) {
+  for (let i = 0; i < oldTreeAttsKeys.length; i++) {
+    const key = oldTreeAttsKeys[i];
+    if (oldTreeAtts.hasOwnProperty(key) && newTreeAtts.hasOwnProperty(key)) {
       if (key === 'style') {
-        if (!attsAreSame(oldTree[key], newTree[key])) {
+        if (!attsAreSame(oldTreeAtts[key], newTreeAtts[key])) {
+          return false;
+        }
+      } else if (/^on\w*/.test(key)) {
+        if (newTreeAtts[key].toString() !== oldTreeAtts[key].toString()) {
           return false;
         }
       } else {
-        if (oldTree[key] !== newTree[key]) {
+        if (oldTreeAtts[key] !== newTreeAtts[key]) {
           return false;
         }
       }
-    } else {
-      return false;
     }
   }
 

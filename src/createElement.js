@@ -22,7 +22,7 @@ const createElement = (node) => {
   Object.keys(attributes).forEach(k => {
     if (k === 'style') {
       $el.setAttribute(k, createElementStyles(attributes[k]));
-    } else if (/on.*/.test(k)) {
+    } else if (/^on\w*/.test(k)) {
       $el.addEventListener(k.replace('on', '').toLowerCase(), attributes[k]);
     } else {
       $el.setAttribute(k, attributes[k]);

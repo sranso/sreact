@@ -11,9 +11,10 @@ const mapTodos = (todos) => todos.map(
 
 const saveTodo = e => {
   e.preventDefault();
-  const val = document.getElementById('text').value;
-  todos.push(val);
+  const $inputEl = document.getElementById('text');
+  todos.push($inputEl.value);
   localStorage.setItem('todos', JSON.stringify(todos));
+  $inputEl.value = '';
   render(makeTree(), domRoot);
 };
 
@@ -37,7 +38,7 @@ const makeTree = () =>
         onClick: saveTodo
       }, [ '' ])
     ]),
-    createNode('div', { style: { 'font-weight': 700 } }, [' todos' ]),
+    createNode('div', { style: { 'font-weight': 700 } }, [ 'todos' ]),
     createNode('ul', { }, mapTodos(JSON.parse(localStorage.todos)))
   ]);
 
