@@ -15,7 +15,7 @@ class VirtualNode {
   }
 
   _createChildren(children) {
-    return children.map((child) => {
+    return children.map(child => {
       if (child instanceof (VirtualNode || VirtualText)) {
         return child;
       } else if (typeof child === 'string' ||

@@ -12,11 +12,15 @@ const domRoot = document.getElementById('root');
 render(tree, domRoot);
 
 let word = 'muaha';
+let children = [];
 setInterval(() => {
+  let anotherChild = createNode('p', { class: 'another' }, [ 'another child' ]);
+  children.push(anotherChild);
+
   let newTree = createNode('div', { id: 'parent' }, [
-    createNode('div', { id: 'middle' }, [
-      createNode('p', { id: 'child' }, [ word ])
-    ])
+    createNode('div', { id: 'middle' },
+      children.concat(createNode('p', { id: 'child' }, [ word ]))
+    )
   ]);
   word += ' ha';
   render(newTree, domRoot);
