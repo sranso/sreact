@@ -72,6 +72,8 @@ const recursivelyAssignEls = (node, newTree) => {
 };
 
 const attsAreSame = (oldTree, newTree) => {
+  if (!oldTree.attributes || !newTree.attributes) return false;
+
   const oldTreeKeys = Object.keys(oldTree);
   const newTreeKeys = Object.keys(newTree);
 
