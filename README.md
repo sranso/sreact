@@ -1,6 +1,6 @@
 Recreate a simple version of [React](https://github.com/facebook/react).
 
-###Get started
+### Get started
 To install packages and build:
 ```
 $ npm install
@@ -13,7 +13,7 @@ To run tests:
 $ npm run test
 ```
 
-###Goals
+### Goals
 - understand better how React works
 - use pure JS
 - interact with browser APIs
@@ -22,20 +22,20 @@ $ npm run test
 - practice TDD
 
 
-###Resources:
+### Resources:
 - [React](https://github.com/facebook/react)
   - https://facebook.github.io/react/contributing/implementation-notes.html
   - https://facebook.github.io/react/docs/reconciliation.html
 - [ES6 for Universal JS Apps](https://medium.com/javascript-scene/how-to-use-es6-for-isomorphic-javascript-apps-2a9c3abe5ea2#.xfoth6mdp)
 
 
-###General Todos
+### General Todos
 - add eslint
 - use https://github.com/paul-jean/dom-viz to see if correct divs are changing
 - handle img tags (no children will break!), p tags with a tags inside
 
 
-###Virtual DOM Steps
+### Virtual DOM Steps
 1. create virtual DOM, eg what original DOM should look like
 2. append virtual DOM to actual DOM
 3. listen for updates from components
@@ -45,7 +45,7 @@ $ npm run test
 7. start again from step 3
 
 
-###Approaches taken
+### Approaches taken
 - render
   - just render into doc
   - hold all logic around diffing and patching, plus reference to the latest tree
@@ -72,7 +72,7 @@ $ npm run test
   - only give ids to vnodes that need them
   - give no nodes ids; instead, give them reference to their dom el
 
-###other-examples/
+### other-examples/
 Examples of a virtual DOM from other places. To compile, run `webpack` from the directory.
 - [virtual-dom-medium/](https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060#.fess65wex)
 - [virtual-dom-npm/](https://github.com/Matt-Esch/virtual-dom)
