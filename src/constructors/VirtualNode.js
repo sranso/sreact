@@ -1,5 +1,5 @@
 /*
- * create a node tree
+ * create nodes
  */
 class VirtualText {
   constructor(text) {

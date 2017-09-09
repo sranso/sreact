@@ -9,56 +9,56 @@ import createElement from './createElement';
  * return array of patches
  */
 const diff = (oldTree, newTree) => {
-  return walk(oldTree.children[0], newTree, oldTree);
+  // this grabs the first child from the #root element,
+  // which we don't want to modify
+  const oldNode = oldTree.children[0];
+  return walk(oldNode, newTree, oldTree);
 };
 
-const walk = (oldTree, newTree, parentNode) => {
-  if (oldTree === newTree) {
+const walk = (oldNode, newNode, oldParentNode) => {
+  if (oldNode === newNode) {
     return;
   }
 
-  if (!oldTree) {
+  if (!oldNode) {
     // ADD
-    newTree.$el = createElement(newTree);
-    recursivelyAssignEls(newTree.$el, newTree);
-    return [new VirtualPatch(newTree, parentNode, 'ADD')];
-  } else if (!newTree) {
+    recursivelyAssignEls(createElement(newNode), newNode);
+    return [new VirtualPatch(newNode, oldParentNode, 'ADD')];
+  } else if (!newNode) {
     // DEL
-    return [new VirtualPatch(oldTree, parentNode, 'DEL')];
-  } else if (oldTree instanceof VirtualText && newTree instanceof VirtualText) {
-    if (oldTree.text !== newTree.text) {
+    return [new VirtualPatch(oldNode, oldParentNode, 'DEL')];
+  } else if (oldNode instanceof VirtualText && newNode instanceof VirtualText) {
+    if (oldNode.text !== newNode.text) {
       // REPL
-      // a. is text node with diff values
-      newTree.$el = createElement(newTree);
-      recursivelyAssignEls(newTree.$el, newTree);
-      return [new VirtualPatch(newTree, parentNode, 'REPL', oldTree)];
-    } else {
-      return;
+      // a. is text node with different values
+      recursivelyAssignEls(createElement(newNode), newNode);
+      return [new VirtualPatch(newNode, oldParentNode, 'REPL', oldNode)];
     }
+    // b. no difference
+    return;
   } else {
-    if ( oldTree.elType !== newTree.elType ||
-         !attsAreSame(oldTree.attributes, newTree.attributes) ) {
+    if ( oldNode.elType !== newNode.elType ||
+         !attsAreSame(oldNode.attributes, newNode.attributes) ) {
       // REPL
-      // b. are different types
-      // c. have different attributes
+      // c. are different types
+      // d. have different attributes
       // TODO: only change the atts, not entire node
-      newTree.$el = createElement(newTree);
-      recursivelyAssignEls(newTree.$el, newTree);
-      return [new VirtualPatch(newTree, parentNode, 'REPL', oldTree)];
+      recursivelyAssignEls(createElement(newNode), newNode);
+      return [new VirtualPatch(newNode, oldParentNode, 'REPL', oldNode)];
     } else {
       // check children
       // TODO: allow for individual children to change, rather than modifying
       // all children after a changed node
 
-      newTree.$el = oldTree.$el;
+      newNode.$el = oldNode.$el;
 
-      const maxChildren = Math.max(oldTree.children.length, newTree.children.length);
+      const maxChildren = Math.max(oldNode.children.length, newNode.children.length);
       let childPatchesArray = [];
 
       for (let i = 0; i <= maxChildren; i++) {
-        const oldTreeChild = oldTree.children[i];
-        const newTreeChild = newTree.children[i];
-        const childPatch = walk(oldTreeChild, newTreeChild, oldTree);
+        const oldNodeChild = oldNode.children[i];
+        const newNodeChild = newNode.children[i];
+        const childPatch = walk(oldNodeChild, newNodeChild, oldNode);
         if (childPatch) {
           childPatchesArray = childPatchesArray.concat(childPatch);
         }
@@ -69,11 +69,11 @@ const walk = (oldTree, newTree, parentNode) => {
 
 };
 
-const recursivelyAssignEls = (node, newTree) => {
-  newTree.$el = node;
-  if (node.childNodes && node.nodeType !== 3) {
-    for (let i = 0; i < node.childNodes.length; i++) {
-      recursivelyAssignEls(node.childNodes[i], newTree.children[i]);
+const recursivelyAssignEls = ($node, newNode) => {
+  newNode.$el = $node;
+  if ($node.hasChildNodes() && $node.nodeType !== 3) {
+    for (let i = 0; i < $node.childNodes.length; i++) {
+      recursivelyAssignEls($node.childNodes[i], newNode.children[i]);
     }
   }
 };

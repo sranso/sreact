@@ -6,7 +6,9 @@ const todos = [];
 localStorage.setItem('todos', JSON.stringify(todos));
 
 const mapTodos = (todos) => todos.map(
-  todo => createNode('li', { style: { 'margin-bottom': '10px' } }, [ todo ])
+  todo => createNode('li', {
+    style: { 'margin-bottom': '10px' }
+  }, [ todo ])
 );
 
 const saveTodo = e => {
@@ -30,16 +32,19 @@ const makeTree = () =>
         type: 'text',
         id: 'text'
       }, [ '' ]),
-      createNode('input', {
+      createNode('button', {
         style: { display: 'block', 'margin-bottom': '10px' },
         type: 'submit',
         value: 'save todo',
         id: 'submit',
         onClick: saveTodo
-      }, [ '' ])
+      }, [ 'Submit' ])
     ]),
-    createNode('div', { style: { 'font-weight': 700 } }, [ 'todos' ]),
-    createNode('ul', { }, mapTodos(JSON.parse(localStorage.todos)))
+    createNode('div', {
+      style: { 'font-weight': 700 }
+    }, [ 'todos' ]),
+    createNode('ul', {
+    }, mapTodos(JSON.parse(localStorage.todos)))
   ]);
 
 const domRoot = document.getElementById('root');
